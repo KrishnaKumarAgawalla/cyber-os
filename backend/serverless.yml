@@ -4,7 +4,9 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-1
-  stage: dev
+  stage: ${opt:stage, 'dev'}
+  environment: ${file(serverless/environment.yml)}
+  iamRoleStatements: ${file(serverless/iamRoleStatements.yml)}
 
 functions: ${file(./functions.yml):functions}
 

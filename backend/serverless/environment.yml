@@ -1,0 +1,1 @@
+TABLE_NAME: CyberOS_Data_${self:provider.stage}
