@@ -1,0 +1,2 @@
+functions:
+  - getPortfolio: ${file(./functions/getPortfolio.yml):getPortfolio}
