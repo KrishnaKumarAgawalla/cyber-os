@@ -1,7 +1,10 @@
 Resources:
+  # DynamoDB Resource Configuration
+  # Configured for AWS Free Tier (Always Free)
   PortfolioTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      # Table name includes stage (dev/prod) to prevent environment collisions
       TableName: CyberOS_Data_${self:provider.stage}
       AttributeDefinitions:
         - AttributeName: id
@@ -9,6 +12,9 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+      # BILLING_SAFEGUARD: 
+      # Using PROVISIONED mode ensures we stay within the 25 RCU/WCU free limit.
+      # If set to ON_DEMAND, costs can occur after the first 12 months.
       BillingMode: PROVISIONED
       ProvisionedThroughput:
         ReadCapacityUnits: 5
