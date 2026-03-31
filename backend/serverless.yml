@@ -2,6 +2,11 @@
 # Every service is a standalone node project located in /services.
 # Individual packaging ensures high performance and minimal zip sizes.
 
+# Enable native .env support in V4
+useDotenv: true
+
+org: ${env:SLS_ORG}
+app: ${env:SLS_APP}
 service: cyber-os-backend
 
 provider:

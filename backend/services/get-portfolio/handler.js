@@ -13,6 +13,18 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 const docClient = DynamoDBDocumentClient.from(client);
 
 /**
+ * Custom logger that respects the environment toggle.
+ * Set the environment variable LOG_ENABLED=true to enable logging in production.
+ * @param {string} message - The log message to output.
+ * @param {any} data - Optional additional data to log.
+ */
+const logger = (message, data = "") => {
+  if (isLogEnabled) {
+    console.log(`[LOG]: ${message}`, data);
+  }
+};
+
+/**
  * Lambda handler to fetch portfolio items.
  * @param {Object} event - The AWS Lambda event object.
  * @param {Object} event.pathParameters - Contains the 'id' of the requested data segment.
@@ -20,6 +32,7 @@ const docClient = DynamoDBDocumentClient.from(client);
  */
 module.exports.handler = async (event) => {
   const { id } = event.pathParameters || {};
+  logger("Fetching portfolio segment for ID:", id);
 
   if (!id) {
     return {
