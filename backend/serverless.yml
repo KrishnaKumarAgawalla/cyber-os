@@ -17,10 +17,10 @@ provider:
   logRetentionInDays: 7
   iamRoleStatements: ${file(serverless/iamRoleStatements.yml)}
   memorySize: 128
+  timeout: 15
   deploymentBucket:
     maxPreviousDeploymentArtifacts: 1
     blockPublicAccess: true
-    skipPurge: false
 
 package:
   individually: true
@@ -30,4 +30,6 @@ package:
 
 functions: ${file(./serverless/functions.yml):functions}
 
-resources: ${file(./serverless/dynamoDB.yml)}
+resources:
+  - ${file(./serverless/dynamoDB.yml)}
+  - ${file(./serverless/sns-resource.yml)}

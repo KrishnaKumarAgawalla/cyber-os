@@ -4,7 +4,6 @@ default_environment: &default_environment
   ContactMeLogEnabled: MUST-OVERRIDE
   
   TableName: CyberOS_Data_${self:provider.stage}
-  SnsTopicArn: "arn:aws:sns:us-east-1:836445852570:CyberOS_${self:provider.stage}_Topic"
 
 Dev: 
   <<: *default_environment

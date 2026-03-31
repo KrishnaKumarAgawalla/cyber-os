@@ -1,3 +1,4 @@
 functions:
   - get-portfolio: ${file(./serverless/functions/get-portfolio.yml)}
-  - add-item: ${file(./serverless/functions/add-item.yml)}
+  - manage-data: ${file(./serverless/functions/manage-data.yml)}
+  - contact-me: ${file(./serverless/functions/contact-me.yml)}

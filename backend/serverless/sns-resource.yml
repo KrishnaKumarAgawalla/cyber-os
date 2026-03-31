@@ -1,0 +1,14 @@
+Resources:
+  # The "Radio Station"
+  CyberOSNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: CyberOS-Notifications-${self:provider.stage}
+
+  # The "Listener" (Your Email)
+  CyberOSEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      TopicArn: !Ref CyberOSNotificationTopic
+      Endpoint: ${env:NOTIFICATION_EMAIL}

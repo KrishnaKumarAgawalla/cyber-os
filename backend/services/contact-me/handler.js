@@ -37,7 +37,7 @@ module.exports.handler = async (event) => {
       date: new Date().toISOString(),
     };
 
-    await db.send(new PutCommand({ TableName: process.env.TABLE_NAME, Item: item }));
+    await db.send(new PutCommand({ TableName: process.env.TableName, Item: item }));
     logger("DynamoDB put succeeded", item);
 
     // 2. Publish to SNS Topic (Always Free up to 1k/month)

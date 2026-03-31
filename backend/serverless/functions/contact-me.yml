@@ -3,10 +3,10 @@ name: ${self:provider.stage}-CyberOS-contact-me
 timeout: 10
 environment:
   ContactMeLogEnabled: ${file(serverless/environment.yml):${self:provider.stage}.ContactMeLogEnabled}
-  SnsTopicArn: ${file(serverless/environment.yml):${self:provider.stage}.SnsTopicArn}
+  TableName: ${file(serverless/environment.yml):${self:provider.stage}.TableName}
+  SnsTopicArn: !Ref CyberOSNotificationTopic
 package:
-  individually: true
   patterns:
-    - "!**"
-    - "services/contact-me/**"
+    - services/contact-me/*.*
+    - services/contact-me/node_modules/**
 url: true
