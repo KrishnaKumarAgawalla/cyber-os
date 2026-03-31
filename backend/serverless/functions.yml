@@ -1,2 +1,3 @@
 functions:
   - get-portfolio: ${file(./serverless/functions/get-portfolio.yml)}
+  - add-item: ${file(./serverless/functions/add-item.yml)}

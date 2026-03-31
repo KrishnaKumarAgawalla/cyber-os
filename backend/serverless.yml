@@ -17,6 +17,10 @@ provider:
   logRetentionInDays: 7
   iamRoleStatements: ${file(serverless/iamRoleStatements.yml)}
   memorySize: 128
+  deploymentBucket:
+    maxPreviousDeploymentArtifacts: 1
+    blockPublicAccess: true
+    skipPurge: false
 
 package:
   individually: true

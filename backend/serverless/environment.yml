@@ -1,12 +1,15 @@
 default_environment: &default_environment
   GetPortfolioLogEnabled: MUST-OVERRIDE
+  AddIItemLogEnabled: MUST-OVERRIDE
   
   TableName: CyberOS_Data_${self:provider.stage}
 
 Dev: 
   <<: *default_environment
   GetPortfolioLogEnabled: true
+  AddIItemLogEnabled: true
 
 Prod:
   <<: *default_environment
   GetPortfolioLogEnabled: false
+  AddIItemLogEnabled: false
