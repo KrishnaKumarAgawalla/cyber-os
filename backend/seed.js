@@ -13,7 +13,7 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 const docClient = DynamoDBDocumentClient.from(client);
 
 // Use the development table name by default
-const TABLE_NAME = "CyberOS_Data_dev";
+const TABLE_NAME = "CyberOS_Data_Dev";
 
 /**
  * Uploads a single data object to DynamoDB.

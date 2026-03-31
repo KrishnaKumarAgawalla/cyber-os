@@ -1,2 +1,2 @@
 functions:
-  - getPortfolio: ${file(./functions/getPortfolio.yml):getPortfolio}
+  - get-portfolio: ${file(./serverless/functions/get-portfolio.yml)}

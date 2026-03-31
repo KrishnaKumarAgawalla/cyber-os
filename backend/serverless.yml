@@ -1,3 +1,7 @@
+# @architecture Single-Table Design with Individual Packaging
+# Every service is a standalone node project located in /services.
+# Individual packaging ensures high performance and minimal zip sizes.
+
 service: cyber-os-backend
 
 provider:
@@ -8,6 +12,11 @@ provider:
   environment: ${file(serverless/environment.yml)}
   iamRoleStatements: ${file(serverless/iamRoleStatements.yml)}
 
-functions: ${file(./functions.yml):functions}
+package:
+  individually: true
+  include:
+    - "!./**"
 
-resources: ${file(./dynamoDB.yml)}
+functions: ${file(./serverless/functions.yml):functions}
+
+resources: ${file(./serverless/dynamoDB.yml)}

@@ -1,0 +1,7 @@
+handler: services/get-portfolio/handler.handler
+name: ${self:provider.stage}-CyberOS-get-portfolio
+package:
+  include:
+    - services/get-portfolio/*.*
+    - services/get-portfolio/node_modules/**
+url: true

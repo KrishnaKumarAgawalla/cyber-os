@@ -1,3 +1,0 @@
-getPortfolio:
-  handler: services/getPortfolio/handler.handler
-  url: true
