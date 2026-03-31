@@ -11,6 +11,7 @@ const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
 // The region is hardcoded to us-east-1 for "Always Free" consistency.
 const client = new DynamoDBClient({ region: "us-east-1" });
 const docClient = DynamoDBDocumentClient.from(client);
+const isLogEnabled = process.env.LogEnabled === 'true';
 
 /**
  * Custom logger that respects the environment toggle.
@@ -27,11 +28,11 @@ const logger = (message, data = "") => {
 /**
  * Lambda handler to fetch portfolio items.
  * @param {Object} event - The AWS Lambda event object.
- * @param {Object} event.pathParameters - Contains the 'id' of the requested data segment.
  * @returns {Promise<Object>} API Gateway compatible response object.
  */
 module.exports.handler = async (event) => {
-  const { id } = event.pathParameters || {};
+  logger("Received event:", JSON.stringify(event));
+  const { id } = event.queryStringParameters || {};
   logger("Fetching portfolio segment for ID:", id);
 
   if (!id) {
@@ -47,7 +48,7 @@ module.exports.handler = async (event) => {
 
   try {
     const command = new GetCommand({
-      TableName: process.env.TABLE_NAME,
+      TableName: process.env.TableName,
       Key: { id },
     });
     const result = await docClient.send(command);

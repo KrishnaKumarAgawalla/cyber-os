@@ -1,5 +1,8 @@
 handler: services/get-portfolio/handler.handler
 name: ${self:provider.stage}-CyberOS-get-portfolio
+environment:
+  LogEnabled: ${file(serverless/environment.yml):${self:provider.stage}.GetPortfolioLogEnabled}
+  TableName: ${file(serverless/environment.yml):${self:provider.stage}.TableName}
 package:
   include:
     - services/get-portfolio/*.*

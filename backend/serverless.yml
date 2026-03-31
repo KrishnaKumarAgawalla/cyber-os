@@ -13,9 +13,10 @@ provider:
   name: aws
   runtime: nodejs22.x
   region: us-east-1
-  stage: ${opt:stage, 'dev'}
-  environment: ${file(serverless/environment.yml)}
+  stage: ${opt:stage, 'Dev'}
+  logRetentionInDays: 7
   iamRoleStatements: ${file(serverless/iamRoleStatements.yml)}
+  memorySize: 128
 
 package:
   individually: true

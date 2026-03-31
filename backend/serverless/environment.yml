@@ -1,1 +1,12 @@
-TABLE_NAME: CyberOS_Data_${self:provider.stage}
+default_environment: &default_environment
+  GetPortfolioLogEnabled: MUST-OVERRIDE
+  
+  TableName: CyberOS_Data_${self:provider.stage}
+
+Dev: 
+  <<: *default_environment
+  GetPortfolioLogEnabled: true
+
+Prod:
+  <<: *default_environment
+  GetPortfolioLogEnabled: false
