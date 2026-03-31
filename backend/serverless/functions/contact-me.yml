@@ -1,0 +1,12 @@
+handler: services/contact-me/handler.handler
+name: ${self:provider.stage}-CyberOS-contact-me
+timeout: 10
+environment:
+  ContactMeLogEnabled: ${file(serverless/environment.yml):${self:provider.stage}.ContactMeLogEnabled}
+  SnsTopicArn: ${file(serverless/environment.yml):${self:provider.stage}.SnsTopicArn}
+package:
+  individually: true
+  patterns:
+    - "!**"
+    - "services/contact-me/**"
+url: true

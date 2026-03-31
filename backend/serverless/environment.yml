@@ -1,15 +1,19 @@
 default_environment: &default_environment
   GetPortfolioLogEnabled: MUST-OVERRIDE
-  AddIItemLogEnabled: MUST-OVERRIDE
+  ManageDataLogEnabled: MUST-OVERRIDE
+  ContactMeLogEnabled: MUST-OVERRIDE
   
   TableName: CyberOS_Data_${self:provider.stage}
+  SnsTopicArn: "arn:aws:sns:us-east-1:836445852570:CyberOS_${self:provider.stage}_Topic"
 
 Dev: 
   <<: *default_environment
   GetPortfolioLogEnabled: true
-  AddIItemLogEnabled: true
+  ManageDataLogEnabled: true
+  ContactMeLogEnabled: true
 
 Prod:
   <<: *default_environment
   GetPortfolioLogEnabled: false
-  AddIItemLogEnabled: false
+  ManageDataLogEnabled: false
+  ContactMeLogEnabled: false

@@ -1,0 +1,58 @@
+const { PutCommand, DeleteCommand, BatchWriteCommand } = require("@aws-sdk/lib-dynamodb");
+const { db, logger, parseBody, buildResponse } = require("../utils");
+
+/**
+ * Lambda handler for managing inventory in DynamoDB (create/update/delete).
+ * @param {Object} event - The API Gateway event object.
+ * @param {Object} event.requestContext.http - Contains HTTP method.
+ * @param {string} [event.body] - JSON string payload for POST/DELETE operations.
+ * @returns {Promise<Object>} API Gateway-compatible response.
+ */
+module.exports.handler = async (event) => {
+  logger("Received event", event);
+
+  const method = event.requestContext?.http?.method;
+  const body = parseBody(event.body);
+
+  if (body === null) {
+    return buildResponse(400, { error: "Invalid JSON payload" });
+  }
+
+  logger("Request method", method);
+  logger("Request body", body);
+
+  try {
+    if (method === "POST") {
+      if (Array.isArray(body)) {
+        const writeRequests = body.map(item => ({ PutRequest: { Item: item } }));
+
+        await db.send(new BatchWriteCommand({
+          RequestItems: {
+            [process.env.TABLE_NAME]: writeRequests,
+          },
+        }));
+
+        return buildResponse(200, { message: `Batch synchronization of ${body.length} items complete.` });
+      }
+
+      await db.send(new PutCommand({ TableName: process.env.TABLE_NAME, Item: body }));
+      return buildResponse(200, { message: "Cyber-OS Memory Updated/Synchronized" });
+    }
+
+    if (method === "DELETE") {
+      if (!body.id) {
+        logger("Missing ID for delete", body);
+        return buildResponse(400, { error: "Missing ID for purge operation" });
+      }
+
+      await db.send(new DeleteCommand({ TableName: process.env.TABLE_NAME, Key: { id: body.id } }));
+      logger("DynamoDB delete succeeded", { id: body.id });
+      return buildResponse(200, { message: "Data Segment Purged" });
+    }
+
+    return buildResponse(405, { error: "Method Not Allowed" });
+  } catch (error) {
+    logger("Management error", error);
+    return buildResponse(500, { error: error.message });
+  }
+};

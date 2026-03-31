@@ -1,0 +1,10 @@
+handler: services/manage-data/handler.handler
+name: ${self:provider.stage}-CyberOS-manage-data
+environment:
+  LogEnabled: ${file(serverless/environment.yml):${self:provider.stage}.ManageDataLogEnabled}
+  TableName: ${file(serverless/environment.yml):${self:provider.stage}.TableName}
+package:
+  include:
+    - services/manage-data/*.*
+    - services/manage-data/node_modules/**
+url: true

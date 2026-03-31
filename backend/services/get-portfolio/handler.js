@@ -4,26 +4,9 @@
  * from DynamoDB based on a unique ID.
  */
 
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const { GetCommand } = require("@aws-sdk/lib-dynamodb");
+const { db, logger } = require("../utils");
 
-// Initialize the DynamoDB Client for Node.js 22 runtime.
-// The region is hardcoded to us-east-1 for "Always Free" consistency.
-const client = new DynamoDBClient({ region: "us-east-1" });
-const docClient = DynamoDBDocumentClient.from(client);
-const isLogEnabled = process.env.LogEnabled === 'true';
-
-/**
- * Custom logger that respects the environment toggle.
- * Set the environment variable LOG_ENABLED=true to enable logging in production.
- * @param {string} message - The log message to output.
- * @param {any} data - Optional additional data to log.
- */
-const logger = (message, data = "") => {
-  if (isLogEnabled) {
-    console.log(`[LOG]: ${message}`, data);
-  }
-};
 
 /**
  * Lambda handler to fetch portfolio items.
@@ -51,7 +34,7 @@ module.exports.handler = async (event) => {
       TableName: process.env.TableName,
       Key: { id },
     });
-    const result = await docClient.send(command);
+    const result = await db.send(command);
 
     if (!result.Item) {
       return {
@@ -74,7 +57,7 @@ module.exports.handler = async (event) => {
       body: JSON.stringify(result.Item),
     };
   } catch (error) {
-    console.error("DynamoDB Error:", error);
+    logger("DynamoDB Error", error);
     return {
       statusCode: 500,
       headers: { "Access-Control-Allow-Origin": "*" },
