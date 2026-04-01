@@ -5,6 +5,8 @@ default_environment: &default_environment
   
   TableName: CyberOS_Data_${self:provider.stage}
 
+  ChipherKey: ${env:CIPHER_KEY}
+
 Dev: 
   <<: *default_environment
   GetPortfolioLogEnabled: true

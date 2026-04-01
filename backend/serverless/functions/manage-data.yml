@@ -3,6 +3,7 @@ name: ${self:provider.stage}-CyberOS-manage-data
 environment:
   LogEnabled: ${file(serverless/environment.yml):${self:provider.stage}.ManageDataLogEnabled}
   TableName: ${file(serverless/environment.yml):${self:provider.stage}.TableName}
+  CipherKey: ${file(serverless/environment.yml):${self:provider.stage}.ChipherKey}
 package:
   include:
     - services/manage-data/*.*

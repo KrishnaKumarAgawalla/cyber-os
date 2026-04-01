@@ -40,7 +40,7 @@ const parseBody = (body) => {
  * @returns {string}
  */
 const xorCipher = (str) => {
-  const key = process.env.CIPHER_KEY || "CYBER_OS_SECRET";
+  const key = process.env.ChipherKey || "CYBER_OS_SECRET";
   return str
     .split("")
     .map((char, i) =>
