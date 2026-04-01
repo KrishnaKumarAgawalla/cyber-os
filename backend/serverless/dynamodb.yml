@@ -19,3 +19,7 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
+      # Enable TTL for automatic cleanup of old data contact messages
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true

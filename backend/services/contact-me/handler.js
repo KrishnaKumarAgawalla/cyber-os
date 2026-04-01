@@ -3,6 +3,7 @@ const { PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { db, logger } = require("../utils");
 
 const sns = new SNSClient({ region: "us-east-1" });
+const DAYS_TO_KEEP = 30;
 
 /**
  * Lambda handler for inbound “contact me” messages.
@@ -27,6 +28,9 @@ module.exports.handler = async (event) => {
     const { name, email, message } = JSON.parse(event.body);
     logger("Parsed incoming message", { name, email, message });
 
+    const expirationTime =
+      Math.floor(Date.now() / 1000) + DAYS_TO_KEEP * 24 * 60 * 60;
+
     // 1. Store in Always-Free DynamoDB (25GB limit)
     const item = {
       id: `MSG#${Date.now()}`,
@@ -35,19 +39,24 @@ module.exports.handler = async (event) => {
       contactEmail: email,
       text: message,
       date: new Date().toISOString(),
+      expiresAt: expirationTime, // TTL attribute for automatic cleanup
     };
 
-    await db.send(new PutCommand({ TableName: process.env.TableName, Item: item }));
+    await db.send(
+      new PutCommand({ TableName: process.env.TableName, Item: item }),
+    );
     logger("DynamoDB put succeeded", item);
 
     // 2. Publish to SNS Topic (Always Free up to 1k/month)
     // You'll create this "Topic" in the AWS Console and subscribe your email to it.
     const snsMessage = `Cyber-OS Alert!\nFrom: ${name} (${email})\nMessage: ${message}`;
-    await sns.send(new PublishCommand({
-      Message: snsMessage,
-      Subject: "New Portfolio Message",
-      TopicArn: process.env.SnsTopicArn,
-    }));
+    await sns.send(
+      new PublishCommand({
+        Message: snsMessage,
+        Subject: "New Portfolio Message",
+        TopicArn: process.env.SnsTopicArn,
+      }),
+    );
     logger("SNS publish succeeded", { topicArn: process.env.SnsTopicArn });
 
     return {
