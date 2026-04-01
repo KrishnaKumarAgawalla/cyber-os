@@ -17,7 +17,7 @@ module.exports.handler = async (event) => {
   const body = parseBody(event.body);
 
   if (body === null) {
-    return buildResponse(400, { error: "Invalid JSON payload" });
+    return buildResponse(400, { error: "Invalid JSON payload" }, false);
   }
 
   logger("Request method", method);
@@ -39,27 +39,27 @@ module.exports.handler = async (event) => {
           }));
         }
 
-        return buildResponse(200, { message: `Batch synchronization of ${body.length} items complete.` });
+        return buildResponse(200, { message: `Batch synchronization of ${body.length} items complete.` }, false);
       }
 
       await db.send(new PutCommand({ TableName: process.env.TableName, Item: body }));
-      return buildResponse(200, { message: "Cyber-OS Memory Updated/Synchronized" });
+      return buildResponse(200, { message: "Cyber-OS Memory Updated/Synchronized" }, false);
     }
 
     if (method === "DELETE") {
       if (!body.id) {
         logger("Missing ID for delete", body);
-        return buildResponse(400, { error: "Missing ID for purge operation" });
+        return buildResponse(400, { error: "Missing ID for purge operation" }, false);
       }
 
       await db.send(new DeleteCommand({ TableName: process.env.TableName, Key: { id: body.id } }));
       logger("DynamoDB delete succeeded", { id: body.id });
-      return buildResponse(200, { message: "Data Segment Purged" });
+      return buildResponse(200, { message: "Data Segment Purged" }, false);
     }
 
-    return buildResponse(405, { error: "Method Not Allowed" });
+    return buildResponse(405, { error: "Method Not Allowed" }, false);
   } catch (error) {
     logger("Management error", error);
-    return buildResponse(500, { error: error.message });
+    return buildResponse(500, { error: error.message }, false);
   }
 };

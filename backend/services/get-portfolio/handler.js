@@ -4,8 +4,8 @@
  * from DynamoDB based on a unique ID.
  */
 
-const { GetCommand } = require("@aws-sdk/lib-dynamodb");
-const { db, logger } = require("../utils");
+const { GetCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
+const { db, logger, buildResponse } = require("../utils");
 
 
 /**
@@ -13,55 +13,63 @@ const { db, logger } = require("../utils");
  * @param {Object} event - The AWS Lambda event object.
  * @returns {Promise<Object>} API Gateway compatible response object.
  */
-module.exports.handler = async (event) => {
-  logger("Received event:", JSON.stringify(event));
-  const { id } = event.queryStringParameters || {};
-  logger("Fetching portfolio segment for ID:", id);
+const getPortfolioById = async (id) => {
+  if (!id) return null;
+
+  const command = new GetCommand({
+    TableName: process.env.TableName,
+    Key: { id },
+  });
+
+  const result = await db.send(command);
+  return result.Item || null;
+};
+
+const getAllPortfolioSegments = async () => {
+  const [projects, experience] = await Promise.all([
+    db.send(new QueryCommand({
+      TableName: process.env.TableName,
+      IndexName: "TypeIndex",
+      KeyConditionExpression: "#t = :type",
+      ExpressionAttributeNames: { "#t": "type" },
+      ExpressionAttributeValues: { ":type": "PROJECT" },
+    })),
+    db.send(new QueryCommand({
+      TableName: process.env.TableName,
+      IndexName: "TypeIndex",
+      KeyConditionExpression: "#t = :type",
+      ExpressionAttributeNames: { "#t": "type" },
+      ExpressionAttributeValues: { ":type": "EXPERIENCE" },
+    })),
+  ]);
+
+  return [...(projects.Items || []), ...(experience.Items || [])];
+};
+
+const handleRequest = async (queryStringParameters = {}) => {
+  const { id } = queryStringParameters;
 
   if (!id) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ error: "Missing identity ID" }),
-    };
+    const systemMemory = await getAllPortfolioSegments();
+    return buildResponse(200, systemMemory);
   }
 
+  const portfolioItem = await getPortfolioById(id);
+  if (!portfolioItem) {
+    return buildResponse(404, { error: "Data segment not found" });
+  }
+
+  return buildResponse(200, portfolioItem);
+};
+
+module.exports.handler = async (event) => {
+  logger("Received event:", JSON.stringify(event));
+
   try {
-    const command = new GetCommand({
-      TableName: process.env.TableName,
-      Key: { id },
-    });
-    const result = await db.send(command);
-
-    if (!result.Item) {
-      return {
-        statusCode: 404,
-        headers: { "Access-Control-Allow-Origin": "*" },
-        body: JSON.stringify({ error: "Data segment not found" }),
-      };
-    }
-
-    /**
-     * The returned Item includes the 'ui_vibe' key.
-     * This key is mapped in the React frontend to specific Tailwind classes.
-     */
-    return {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(result.Item),
-    };
+    const response = await handleRequest(event.queryStringParameters);
+    return response;
   } catch (error) {
     logger("DynamoDB Error", error);
-    return {
-      statusCode: 500,
-      headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ error: "System fault: Internal Server Error" }),
-    };
+    return buildResponse(500, { error: "System fault: Internal Server Error" });
   }
 };

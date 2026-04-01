@@ -7,7 +7,9 @@
     - dynamodb:UpdateItem
     - dynamodb:BatchWriteItem
     - dynamodb:DeleteItem
-  Resource: "arn:aws:dynamodb:us-east-1:*:table/CyberOS_Data_${self:provider.stage}"
+  Resource:
+    - "arn:aws:dynamodb:us-east-1:*:table/CyberOS_Data_${self:provider.stage}"
+    - "arn:aws:dynamodb:us-east-1:*:table/CyberOS_Data_${self:provider.stage}/index/*"
  
 # SNS "Always Free" Permissions
 - Effect: Allow

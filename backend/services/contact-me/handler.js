@@ -1,6 +1,6 @@
 const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns");
 const { PutCommand } = require("@aws-sdk/lib-dynamodb");
-const { db, logger } = require("../utils");
+const { db, logger, buildResponse } = require("../utils");
 
 const sns = new SNSClient({ region: "us-east-1" });
 const DAYS_TO_KEEP = 30;
@@ -17,11 +17,7 @@ module.exports.handler = async (event) => {
 
   if (!event.body) {
     logger("Missing request body");
-    return {
-      statusCode: 400,
-      headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ error: "Request body is required" }),
-    };
+    return buildResponse(400, { error: "Request body is required" });
   }
 
   try {
@@ -59,17 +55,9 @@ module.exports.handler = async (event) => {
     );
     logger("SNS publish succeeded", { topicArn: process.env.SnsTopicArn });
 
-    return {
-      statusCode: 200,
-      headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ message: "Inbound transmission successful." }),
-    };
+    return buildResponse(200, { message: "Inbound transmission successful." });
   } catch (err) {
     logger("Error in contact-me handler", err);
-    return {
-      statusCode: 500,
-      headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ error: err.message }),
-    };
+    return buildResponse(500, { error: err.message });
   }
 };
