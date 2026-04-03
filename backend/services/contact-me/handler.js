@@ -29,8 +29,8 @@ module.exports.handler = async (event) => {
 
     // 1. Store in Always-Free DynamoDB (25GB limit)
     const item = {
-      id: `MSG#${Date.now()}`,
-      type: "CONTACT",
+      id: `MESSAGE#${Date.now()}`,
+      type: "MESSAGE",
       sender: name,
       contactEmail: email,
       text: message,
