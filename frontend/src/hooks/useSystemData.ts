@@ -49,7 +49,7 @@ export function useSystemData() {
       const encryptedPayload = sessionStorage.getItem("K_OS_ENCRYPTED_DISK");
       
       if (encryptedPayload) {
-        const decrypted = decryptData(encryptedPayload);
+        const decrypted = await decryptData(encryptedPayload);
         setMemory(decrypted);
         setIsBooting(false);
 
@@ -65,7 +65,7 @@ export function useSystemData() {
         sessionStorage.setItem("K_OS_ENCRYPTED_DISK", rawEncoded);
         
         // 3. Decrypt for immediate UI use
-        const decrypted = decryptData(rawEncoded);
+        const decrypted = await decryptData(rawEncoded);
         setMemory(decrypted);
         prewarmCache(decrypted);
       } catch (err) {
