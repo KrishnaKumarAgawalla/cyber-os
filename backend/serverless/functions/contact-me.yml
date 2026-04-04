@@ -5,7 +5,7 @@ environment:
   ContactMeLogEnabled: ${file(serverless/environment.yml):${self:provider.stage}.ContactMeLogEnabled}
   TableName: ${file(serverless/environment.yml):${self:provider.stage}.TableName}
   SnsTopicArn: !Ref CyberOSNotificationTopic
-  CipherKey: ${file(serverless/environment.yml):${self:provider.stage}.ChipherKey}
+  CipherKey: ${file(serverless/environment.yml):${self:provider.stage}.CipherKey}
 package:
   patterns:
     - services/contact-me/*.*

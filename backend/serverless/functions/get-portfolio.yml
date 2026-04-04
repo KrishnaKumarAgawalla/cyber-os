@@ -3,7 +3,7 @@ name: ${self:provider.stage}-CyberOS-get-portfolio
 environment:
   LogEnabled: ${file(serverless/environment.yml):${self:provider.stage}.GetPortfolioLogEnabled}
   TableName: ${file(serverless/environment.yml):${self:provider.stage}.TableName}
-  CipherKey: ${file(serverless/environment.yml):${self:provider.stage}.ChipherKey}
+  CipherKey: ${file(serverless/environment.yml):${self:provider.stage}.CipherKey}
 package:
   include:
     - services/get-portfolio/*.*

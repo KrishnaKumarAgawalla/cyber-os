@@ -1,10 +1,21 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient } = require("@aws-sdk/lib-dynamodb");
+const crypto = require('crypto');
+
 
 const db = DynamoDBDocumentClient.from(
   new DynamoDBClient({ region: "us-east-1" }),
 );
 const isLogEnabled = process.env.LogEnabled === "true";
+
+/**
+ * Derives a stable key from a password using SHA-256.
+ * @param {string} password - The password to derive the key from.
+ * @returns {Buffer} The derived key.
+ */
+const getDerivedKey = (password) => {
+    return crypto.createHash('sha256').update(String(password)).digest();
+};
 
 /**
  * Custom logger that respects the environment toggle.
@@ -35,27 +46,25 @@ const parseBody = (body) => {
 };
 
 /**
- * Simple XOR Obfuscation to hide plain text from the Network Tab
- * @param {string} str - The string to encode/decode
- * @returns {string}
- */
-const xorCipher = (str) => {
-  const key = process.env.ChipherKey || "CYBER_OS_SECRET";
-  return str
-    .split("")
-    .map((char, i) =>
-      String.fromCharCode(char.charCodeAt(0) ^ key.charCodeAt(i % key.length)),
-    )
-    .join("");
-};
-
-/**
- * Encodes data to Base64 after XOR for transmission
+ * Encrypt data using AES-256-GCM for secure transmission.
+ * Combines IV, Auth Tag, and Ciphertext into a single Base64 string.
+ * @param {Object} data - The data to encrypt.
+ * @returns {string} Base64 encoded string containing IV, Auth Tag, and Ciphertext.
  */
 const encodeData = (data) => {
-  const jsonStr = JSON.stringify(data);
-  const ciphered = xorCipher(jsonStr);
-  return Buffer.from(ciphered).toString("base64");
+    const password = process.env.CipherKey || "CYBER_OS_SECRET";
+    const key = getDerivedKey(password);
+    const iv = crypto.randomBytes(12);
+    
+    const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+    const encrypted = Buffer.concat([
+        cipher.update(JSON.stringify(data), 'utf8'),
+        cipher.final()
+    ]);
+
+    const authTag = cipher.getAuthTag();
+    // Combined Payload: IV (12) + Tag (16) + Data
+    return Buffer.concat([iv, authTag, encrypted]).toString("base64");
 };
 
 /**
