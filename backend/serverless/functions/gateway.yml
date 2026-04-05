@@ -1,6 +1,5 @@
 handler: services/gateway/handler.handler
 name: ${self:provider.stage}-K-OS-gateway
-reservedConcurrency: 5
 environment:
   LogEnabled: ${file(serverless/environment.yml):${self:provider.stage}.GatewayLogEnabled}
   GetPortfolioLambda: ${file(serverless/environment.yml):${self:provider.stage}.GetPortfolioLambda}
