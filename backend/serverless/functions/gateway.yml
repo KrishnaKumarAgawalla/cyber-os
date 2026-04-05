@@ -12,15 +12,18 @@ url:
       - ${env:TEST_URL}
       - ${env:FRONTEND_URL}
     allowedMethods:
-      - GET
-      - POST
+      - '*'
     allowedHeaders:
       - Content-Type
-      - X-Content-Encoded
-      - Authorization
+          - Authorization
+          - sec-fetch-mode
+          - sec-fetch-site
+          - sec-fetch-dest
+          - sec-ch-ua
+          - sec-ch-ua-mobile
+          - sec-ch-ua-platform
     exposedResponseHeaders:
-      - X-Content-Encoded
-      - Access-Control-Allow-Origin
+      - '*'
     maxAge: 86400
 package:
   include:
