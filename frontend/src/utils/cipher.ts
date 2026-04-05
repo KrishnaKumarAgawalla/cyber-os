@@ -1,5 +1,4 @@
-// Matches the logic in your backend services/utils.js
-const KEY_STRING = import.meta.env.VITE_CIPHER_KEY || "CYBER_OS_SECRET";
+const KEY_STRING = import.meta.env.VITE_CIPHER_KEY;
 
 export const decryptData = async (base64Str: string): Promise<any> => {
     try {
@@ -19,7 +18,7 @@ export const decryptData = async (base64Str: string): Promise<any> => {
             ["decrypt"]
         );
 
-        // 3. Decrypt (ciphertext + tag)
+        // Decrypt (ciphertext + tag)
         const encryptedPayload = new Uint8Array(data.length + tag.length);
         encryptedPayload.set(data);
         encryptedPayload.set(tag, data.length);

@@ -1,41 +1,42 @@
 import { motion } from "motion/react";
 import { User, MessageSquare, ShieldCheck, Send } from "lucide-react";
-
-const MESSAGES = [
-  {
-    sender: "USER_01_ALPHA",
-    role: "Lead Architect",
-    content: "The NEON-CORE implementation was flawless. The security protocols are top-tier.",
-    time: "14:05:27",
-    isMe: false,
-  },
-  {
-    sender: "USER_02_BETA",
-    role: "Product Owner",
-    content: "Excellent work on the GRID-SYNC synchronization layer. The latency is almost zero.",
-    time: "14:05:32",
-    isMe: false,
-  },
-  {
-    sender: "SYSTEM_ADMIN",
-    role: "Security Lead",
-    content: "SHIELD-OS encryption standards exceed all current requirements. Highly recommended.",
-    time: "14:05:45",
-    isMe: false,
-  },
-];
+import { useSystemData } from "../hooks/useSystemData";
 
 export default function TestimonialsContent() {
+  const { memory } = useSystemData();
+
+  const testimonials = memory
+    ?.filter((item) => item.type === "TESTIMONIAL")
+    .sort((a, b) => a.sort_order - b.sort_order) || [];
+
+  const formatSystemTime = (isoString: string) => {
+    const date = new Date(isoString);
+    const ymd = date.toLocaleDateString('en-GB', { 
+      year: 'numeric', 
+      month: '2-digit', 
+      day: '2-digit' 
+    }).replace(/\//g, '.'); // Converts 28/03/2026 to 28.03.2026
+    
+    const hm = date.toLocaleTimeString([], { 
+      hour12: false, 
+      hour: '2-digit', 
+      minute: '2-digit',
+      second: '2-digit'
+    });
+    
+    return `${ymd} // ${hm}`;
+  };
+
   return (
     <div className="flex-1 flex flex-col min-h-0 p-6 overflow-hidden">
       <div className="flex-1 overflow-y-auto space-y-6 mb-6 pr-2">
-        {MESSAGES.map((msg, i) => (
+        {testimonials.map((msg, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: i * 0.15, duration: 0.4 }}
-            className={`flex flex-col ${msg.isMe ? "items-end" : "items-start"}`}
+            className="flex flex-col items-start"
           >
             <div className="flex items-center gap-2 mb-2 px-1">
               <div className="p-1 bg-white/5 rounded-full border border-white/10">
@@ -45,16 +46,16 @@ export default function TestimonialsContent() {
                 {msg.sender} <span className="text-white/20">|</span> {msg.role}
               </span>
             </div>
-            <div className={`max-w-[85%] p-4 rounded-2xl border ${
-              msg.isMe 
-                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-100 rounded-tr-none" 
-                : "bg-white/5 border-white/10 text-white/80 rounded-tl-none"
-            }`}>
+            <div 
+            className="max-w-[85%] p-4 rounded-2xl border bg-white/5 border-white/10 text-white/80 rounded-tl-none group hover:border-emerald-500/30 transition-colors"
+            >
               <p className="text-sm leading-relaxed">{msg.content}</p>
               <div className="mt-2 flex items-center justify-end gap-1">
-                <span className="text-[9px] font-mono text-white/20">{msg.time}</span>
-                <ShieldCheck size={10} className="text-emerald-500/40" />
-              </div>
+                <span className="text-[9px] font-mono text-white/20 tracking-tighter">LOG_TS: {formatSystemTime(msg.time)}</span>
+                {msg.is_verified && (
+                  <ShieldCheck size={10} className="text-emerald-500/50" />
+                )}
+              </div>  
             </div>
           </motion.div>
         ))}

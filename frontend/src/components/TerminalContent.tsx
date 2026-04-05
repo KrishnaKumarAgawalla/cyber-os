@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
+import { useSystemData } from "../hooks/useSystemData";
 
 const STATUS_TEXT = [
   "> INITIALIZING SYSTEM...",
@@ -14,13 +15,25 @@ const STATUS_TEXT = [
 ];
 
 export default function TerminalContent() {
+  const { memory } = useSystemData();
   const [lines, setLines] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const config = memory?.find(item => item.type === "TERMINAL_CONFIG");
+
+  const terminalSequence = [
+    ...(config?.boot_sequence || ["> INITIALIZING..."]),
+    `> IDENTIFIED_USER: KRISHNA_KUMAR_AGRAWALLA`,
+    `> CURRENT_ROLE: ${config?.user_role || "Unavailable"}`,
+    `> LOCATION: ${config?.location || "SECRET"}`,
+    `> CORE_STACK: ${config?.core_tech?.join(", ") || "NA"}`,
+    "> STATUS: OPEN_FOR_INNOVATION",
+  ]
+
   useEffect(() => {
-    if (currentIndex < STATUS_TEXT.length) {
+    if (currentIndex < terminalSequence.length) {
       const timer = setTimeout(() => {
-        setLines((prev) => [...prev, STATUS_TEXT[currentIndex]]);
+        setLines((prev) => [...prev, terminalSequence[currentIndex]]);
         setCurrentIndex((prev) => prev + 1);
       }, 600);
       return () => clearTimeout(timer);
@@ -36,12 +49,15 @@ export default function TerminalContent() {
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
-            className="mb-2"
+            className="flex items-start gap-2 group"
           >
-            {line}
+            <span className="text-emerald-500/40 shrink-0">[{new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })}]</span>
+            <span className="group-last:text-white group-last:font-bold">
+              {line}
+            </span>
           </motion.div>
         ))}
-        {currentIndex < STATUS_TEXT.length && (
+        {currentIndex < terminalSequence.length && (
           <motion.span
             animate={{ opacity: [0, 1, 0] }}
             transition={{ duration: 0.8, repeat: Infinity }}

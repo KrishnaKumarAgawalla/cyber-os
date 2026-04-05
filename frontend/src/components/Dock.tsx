@@ -63,62 +63,61 @@ export default function Dock({ onOpen, activeWindow }: DockProps) {
               onClick={() => onOpen("terminal")}
               isActive={activeWindow === "terminal"}
             />
-          <DockItem 
-            icon={<LayoutGrid size={24} />} 
-            label="Projects" 
-            onClick={() => onOpen("projects")}
-            isActive={activeWindow === "projects"}
-          />
-          <DockItem 
-            icon={<Briefcase size={24} />} 
-            label="Experience" 
-            onClick={() => onOpen("experience")}
-            isActive={activeWindow === "experience"}
-          />
-          <DockItem 
-            icon={<Code2 size={24} />} 
-            label="Skills" 
-            onClick={() => onOpen("skills")}
-            isActive={activeWindow === "skills"}
-          />
-          <DockItem 
-            icon={<Star size={24} />} 
-            label="Brands" 
-            onClick={() => onOpen("brands")}
-            isActive={activeWindow === "brands"}
-          />
-          <DockItem 
-            icon={<MessageSquare size={24} />} 
-            label="Testimonials" 
-            onClick={() => onOpen("testimonials")}
-            isActive={activeWindow === "testimonials"}
-          />
-          <DockItem 
-            icon={<Mail size={24} />} 
-            label="Contact" 
-            onClick={() => onOpen("contact")}
-            isActive={activeWindow === "contact"}
-          />
-          <div className="w-px h-8 bg-white/10 mx-1 shrink-0" />
-          <DockItem 
-            icon={<FileDown size={24} />} 
-            label="Resume" 
-            onClick={() => onOpen("resume")}
-            isActive={activeWindow === "resume"}
-          />
-          <DockItem 
-            icon={<Search size={24} />} 
-            label="Search" 
-            onClick={() => onOpen("search")}
-            isActive={activeWindow === "search"}
-          />
-          <DockItem 
-            icon={<User size={24} />} 
-            label="Identity" 
-            onClick={() => onOpen("identity")}
-            isActive={activeWindow === "identity"}
-          />
-        </div>
+            <DockItem 
+              icon={<User size={24} />} 
+              label="Identity" 
+              onClick={() => onOpen("identity")}
+              isActive={activeWindow === "identity"}
+            />
+            <DockItem 
+              icon={<Star size={24} />} 
+              label="Brands" 
+              onClick={() => onOpen("brands")}
+              isActive={activeWindow === "brands"}
+            />
+            <DockItem 
+              icon={<Briefcase size={24} />} 
+              label="Experience" 
+              onClick={() => onOpen("experience")}
+              isActive={activeWindow === "experience"}
+            />
+            <DockItem 
+              icon={<Code2 size={24} />} 
+              label="Skills" 
+              onClick={() => onOpen("skills")}
+              isActive={activeWindow === "skills"}
+            />
+            <DockItem 
+              icon={<LayoutGrid size={24} />} 
+              label="Projects" 
+              onClick={() => onOpen("projects")}
+              isActive={activeWindow === "projects"}
+            />
+            <DockItem 
+              icon={<FileDown size={24} />} 
+              label="Resume" 
+              onClick={() => onOpen("resume")}
+              isActive={activeWindow === "resume"}
+            />
+            <DockItem 
+              icon={<MessageSquare size={24} />} 
+              label="Testimonials" 
+              onClick={() => onOpen("testimonials")}
+              isActive={activeWindow === "testimonials"}
+            />
+            <DockItem 
+              icon={<Search size={24} />} 
+              label="Search" 
+              onClick={() => onOpen("search")}
+              isActive={activeWindow === "search"}
+            />
+            <DockItem 
+              icon={<Mail size={24} />} 
+              label="Contact" 
+              onClick={() => onOpen("contact")}
+              isActive={activeWindow === "contact"}
+            />
+          </div>
       </div>
     </div>
   </div>

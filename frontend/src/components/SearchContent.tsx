@@ -11,28 +11,22 @@ interface SearchItem {
 
 const SEARCH_ITEMS: SearchItem[] = [
   {
-    id: "identity",
-    label: "Identity",
-    description: "View professional profile and identity details",
-    icon: <User size={18} />,
-  },
-  {
-    id: "resume",
-    label: "Resume",
-    description: "Download professional resume and secure payload",
-    icon: <FileDown size={18} />,
-  },
-  {
     id: "terminal",
     label: "Terminal",
     description: "View system status and current work logs",
     icon: <Terminal size={18} />,
   },
   {
-    id: "projects",
-    label: "Projects",
-    description: "Explore the portfolio of built applications",
-    icon: <LayoutGrid size={18} />,
+    id: "identity",
+    label: "Identity",
+    description: "View professional profile and identity details",
+    icon: <User size={18} />,
+  },
+  {
+    id: "brands",
+    label: "Brands",
+    description: "Companies and clients I've worked with",
+    icon: <Star size={18} />,
   },
   {
     id: "experience",
@@ -47,10 +41,16 @@ const SEARCH_ITEMS: SearchItem[] = [
     icon: <Code2 size={18} />,
   },
   {
-    id: "brands",
-    label: "Brands",
-    description: "Companies and clients I've worked with",
-    icon: <Star size={18} />,
+    id: "projects",
+    label: "Projects",
+    description: "Explore the portfolio of built applications",
+    icon: <LayoutGrid size={18} />,
+  },
+  {
+    id: "resume",
+    label: "Resume",
+    description: "Download professional resume and secure payload",
+    icon: <FileDown size={18} />,
   },
   {
     id: "testimonials",
@@ -175,10 +175,10 @@ export default function SearchContent({ onNavigate }: SearchContentProps) {
 
       <div className="mt-4 sm:mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[8px] sm:text-[9px] text-white/20 uppercase tracking-widest">
         <div className="flex gap-2 sm:gap-4">
-          <span className="flex items-center gap-1">↑↓ Navigate</span>
-          <span className="flex items-center gap-1">↵ Execute</span>
+          <span className="flex items-center gap-1 text-white/30">↑↓ Navigate</span>
+          <span className="flex items-center gap-1 text-white/30">↵ Execute</span>
         </div>
-        <div className="hidden sm:block">System: Search_v1.0</div>
+        <div className="hidden sm:block text-white/30">System: Search_v1.0</div>
       </div>
     </div>
   );
