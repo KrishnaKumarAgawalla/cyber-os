@@ -1,14 +1,14 @@
 Resources:
   # The "Radio Station"
-  CyberOSNotificationTopic:
+  KOSNotificationTopic:
     Type: AWS::SNS::Topic
     Properties:
-      TopicName: CyberOS-Notifications-${self:provider.stage}
+      TopicName: K-OS-Notifications-${self:provider.stage}
 
   # The "Listener" (Your Email)
-  CyberOSEmailSubscription:
+  KOSEmailSubscription:
     Type: AWS::SNS::Subscription
     Properties:
       Protocol: email
-      TopicArn: !Ref CyberOSNotificationTopic
+      TopicArn: !Ref KOSNotificationTopic
       Endpoint: ${env:NOTIFICATION_EMAIL}

@@ -7,7 +7,7 @@ useDotenv: true
 
 org: ${env:SLS_ORG}
 app: ${env:SLS_APP}
-service: cyber-os-backend
+service: k-os-backend
 
 provider:
   name: aws

@@ -8,11 +8,18 @@
     - dynamodb:BatchWriteItem
     - dynamodb:DeleteItem
   Resource:
-    - "arn:aws:dynamodb:us-east-1:*:table/CyberOS_Data_${self:provider.stage}"
-    - "arn:aws:dynamodb:us-east-1:*:table/CyberOS_Data_${self:provider.stage}/index/*"
+    - "arn:aws:dynamodb:us-east-1:*:table/K-OS-Data-${self:provider.stage}"
+    - "arn:aws:dynamodb:us-east-1:*:table/K-OS-Data-${self:provider.stage}/index/*"
  
 # SNS "Always Free" Permissions
 - Effect: Allow
   Action:
     - sns:Publish
   Resource: "*"
+
+# Add to iamRoleStatements.yml to allow the Gateway to talk to other Lambdas
+- Effect: Allow
+  Action:
+    - lambda:InvokeFunction
+  Resource:
+    - "arn:aws:lambda:us-east-1:*:function:${self:provider.stage}-K-OS-*"

@@ -43,7 +43,7 @@ module.exports.handler = async (event) => {
       }
 
       await db.send(new PutCommand({ TableName: process.env.TableName, Item: body }));
-      return buildResponse(200, { message: "Cyber-OS Memory Updated/Synchronized" }, false);
+      return buildResponse(200, { message: "K-OS Memory Updated/Synchronized" }, false);
     }
 
     if (method === "DELETE") {

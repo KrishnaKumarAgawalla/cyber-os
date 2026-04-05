@@ -1,0 +1,29 @@
+handler: services/gateway/handler.handler
+name: ${self:provider.stage}-K-OS-gateway
+reservedConcurrency: 5
+environment:
+  LogEnabled: ${file(serverless/environment.yml):${self:provider.stage}.GatewayLogEnabled}
+  GetPortfolioLambda: ${file(serverless/environment.yml):${self:provider.stage}.GetPortfolioLambda}
+  ContactMeLambda: ${file(serverless/environment.yml):${self:provider.stage}.ContactMeLambda}
+  CipherKey: ${file(serverless/environment.yml):${self:provider.stage}.CipherKey}
+  R2BaseURL: ${file(serverless/environment.yml):${self:provider.stage}.R2BaseURL}
+url:
+  authorizer: none
+  cors:
+    allowOrigins:
+      - ${env:TEST_URL}
+      - ${env:FRONTEND_URL}
+    allowMethods:
+      - GET
+      - POST
+      - OPTIONS
+    allowHeaders:
+      - Content-Type
+      - X-Content-Encoded
+    exposeHeaders:
+      - X-Content-Encoded
+    maxAge: 86400
+package:
+  include:
+    - services/gateway/*.*
+    - services/gateway/node_modules/**

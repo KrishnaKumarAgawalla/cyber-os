@@ -1,5 +1,5 @@
 /**
- * @fileoverview Main entry point for the Cyber-OS Portfolio Data API.
+ * @fileoverview Main entry point for the K-OS Portfolio Data API.
  * This Lambda function retrieves specific data segments (Projects, Experience, etc.)
  * from DynamoDB based on a unique ID.
  */
@@ -89,19 +89,19 @@ const handleRequest = async (queryStringParameters = {}) => {
   if (id) {
     const portfolioItem = await getPortfolioById(id);
     if (!portfolioItem) {
-      return buildResponse(404, { error: "Data segment not found" });
+      return buildResponse(404, { error: "Data segment not found" }, false);
     }
 
-    return buildResponse(200, portfolioItem);
+    return buildResponse(200, portfolioItem, false);
   }
 
   if (type) {
     const portfolioItems = await getPortfolioByType(type);
-    return buildResponse(200, portfolioItems);
+    return buildResponse(200, portfolioItems, false);
   }
 
   const systemMemory = await getAllPortfolioSegments();
-  return buildResponse(200, systemMemory);
+  return buildResponse(200, systemMemory, false);
 };
 
 module.exports.handler = async (event) => {
@@ -112,6 +112,6 @@ module.exports.handler = async (event) => {
     return response;
   } catch (error) {
     logger("DynamoDB Error", error);
-    return buildResponse(500, { error: "System fault: Internal Server Error" });
+    return buildResponse(500, { error: "System fault: Internal Server Error" }, false);
   }
 };

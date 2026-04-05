@@ -2,3 +2,4 @@ functions:
   - get-portfolio: ${file(./serverless/functions/get-portfolio.yml)}
   - manage-data: ${file(./serverless/functions/manage-data.yml)}
   - contact-me: ${file(./serverless/functions/contact-me.yml)}
+  - gateway: ${file(./serverless/functions/gateway.yml)}

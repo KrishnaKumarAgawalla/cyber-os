@@ -52,7 +52,7 @@ const parseBody = (body) => {
  * @returns {string} Base64 encoded string containing IV, Auth Tag, and Ciphertext.
  */
 const encodeData = (data) => {
-    const password = process.env.CipherKey || "CYBER_OS_SECRET";
+    const password = process.env.CipherKey;
     const key = getDerivedKey(password);
     const iv = crypto.randomBytes(12);
     
@@ -79,7 +79,6 @@ const buildResponse = (statusCode, body, encode = true) => {
   return {
     statusCode,
     headers: {
-      "Access-Control-Allow-Origin": "*",
       "X-Content-Encoded": encode ? "true" : "false",
       "Content-Type": "application/json",
     },

@@ -45,7 +45,7 @@ module.exports.handler = async (event) => {
 
     // 2. Publish to SNS Topic (Always Free up to 1k/month)
     // You'll create this "Topic" in the AWS Console and subscribe your email to it.
-    const snsMessage = `Cyber-OS Alert!\nFrom: ${name} (${email})\nMessage: ${message}`;
+    const snsMessage = `K-OS Alert!\nFrom: ${name} (${email})\nMessage: ${message}`;
     await sns.send(
       new PublishCommand({
         Message: snsMessage,
@@ -55,9 +55,9 @@ module.exports.handler = async (event) => {
     );
     logger("SNS publish succeeded", { topicArn: process.env.SnsTopicArn });
 
-    return buildResponse(200, { message: "Inbound transmission successful." });
+    return buildResponse(200, { message: "Inbound transmission successful." }, false);
   } catch (err) {
     logger("Error in contact-me handler", err);
-    return buildResponse(500, { error: err.message });
+    return buildResponse(500, { error: err.message }, false);
   }
 };

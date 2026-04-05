@@ -2,19 +2,28 @@ default_environment: &default_environment
   GetPortfolioLogEnabled: MUST-OVERRIDE
   ManageDataLogEnabled: MUST-OVERRIDE
   ContactMeLogEnabled: MUST-OVERRIDE
+  GatewayLogEnabled: MUST-OVERRIDE
   
-  TableName: CyberOS_Data_${self:provider.stage}
+  TableName: K-OS-Data-${self:provider.stage}
+
+  GetPortfolioLambda: ${self:provider.stage}-K-OS-get-portfolio
+  ContactMeLambda: ${self:provider.stage}-K-OS-contact-me
 
   CipherKey: ${env:CIPHER_KEY}
+  R2BaseURL: ${env:R2_BASE_URL}
+
+  SnsTopicArn: !Ref KOSNotificationTopic
 
 Dev: 
   <<: *default_environment
   GetPortfolioLogEnabled: true
   ManageDataLogEnabled: true
   ContactMeLogEnabled: true
+  GatewayLogEnabled: true
 
 Prod:
   <<: *default_environment
   GetPortfolioLogEnabled: false
   ManageDataLogEnabled: false
   ContactMeLogEnabled: false
+  GatewayLogEnabled: false

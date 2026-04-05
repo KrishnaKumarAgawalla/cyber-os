@@ -5,7 +5,7 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       # Table name includes stage (dev/prod) to prevent environment collisions
-      TableName: CyberOS_Data_${self:provider.stage}
+      TableName: K-OS-Data-${self:provider.stage}
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
