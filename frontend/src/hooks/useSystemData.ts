@@ -62,7 +62,7 @@ const prewarmCache = async (items: any[]) => {
       if (!exists) {
         try {
           const response = await fetch(url, {
-            mode: "cors",
+            mode: "no-cors",
             credentials: "omit",
           });
           if (response.ok) {
