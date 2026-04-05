@@ -242,7 +242,7 @@ export default function App() {
       <Dock onOpen={toggleWindow} activeWindow={activeWindow} />
 
       {/* Ambient Noise Overlay */}
-      <div className="fixed inset-0 z-[100] pointer-events-none opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+      <div className="fixed inset-0 z-[100] pointer-events-none opacity-[0.03]" />
     </div>
   );
 }

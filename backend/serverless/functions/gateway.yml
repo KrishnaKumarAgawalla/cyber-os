@@ -7,20 +7,20 @@ environment:
   CipherKey: ${file(serverless/environment.yml):${self:provider.stage}.CipherKey}
   R2BaseURL: ${file(serverless/environment.yml):${self:provider.stage}.R2BaseURL}
 url:
-  authorizer: none
   cors:
-    allowOrigins:
+    allowedOrigins:
       - ${env:TEST_URL}
       - ${env:FRONTEND_URL}
-    allowMethods:
+    allowedMethods:
       - GET
       - POST
-      - OPTIONS
-    allowHeaders:
+    allowedHeaders:
       - Content-Type
       - X-Content-Encoded
-    exposeHeaders:
+      - Authorization
+    exposedResponseHeaders:
       - X-Content-Encoded
+      - Access-Control-Allow-Origin
     maxAge: 86400
 package:
   include:

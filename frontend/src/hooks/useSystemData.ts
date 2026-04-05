@@ -1,19 +1,27 @@
 // src/hooks/useSystemData.ts
-import { useState, useEffect } from 'react';
-import { decryptData } from '../utils/cipher';
+import { useState, useEffect } from "react";
+import { decryptData } from "../utils/cipher";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 // Helper to recursively find and update asset strings
 const mapAssetUrls = (data: any, baseUrl: string): any => {
   if (Array.isArray(data)) {
-    return data.map(item => mapAssetUrls(item, baseUrl));
-  } else if (typeof data === 'object' && data !== null) {
+    return data.map((item) => mapAssetUrls(item, baseUrl));
+  } else if (typeof data === "object" && data !== null) {
     const newObj: any = {};
     for (const [key, value] of Object.entries(data)) {
-      // Check if the key looks like an asset and starts with our proxy query
-      if ((key === 'logo' || key === 'url' || key === 'icon_url') && typeof value === 'string' && value.startsWith('?proxyAsset=')) {
-        newObj[key] = `${baseUrl}${value}`;
+      if (
+        (key === "logo" || key === "url" || key === "icon_url") &&
+        typeof value === "string" &&
+        value.startsWith("?proxyAsset=")
+      ) {
+        // Split at the '=' to separate the key from the path
+        const parts = value.split("=");
+        const assetPath = parts[1];
+
+        // Encode the path (/logos/github.svg -> %2Flogos%2Fgithub.svg)
+        newObj[key] = `${baseUrl}${parts[0]}=${encodeURIComponent(assetPath)}`;
       } else {
         newObj[key] = mapAssetUrls(value, baseUrl);
       }
@@ -24,11 +32,11 @@ const mapAssetUrls = (data: any, baseUrl: string): any => {
 };
 
 const prewarmCache = async (items: any[]) => {
-  const cache = await caches.open('k-os-asset-cache');
+  const cache = await caches.open("k-os-asset-cache");
 
   const urlsToCache: string[] = [];
 
-  items.forEach(item => {
+  items.forEach((item) => {
     if (item.type === "BRAND" && item.logo) {
       urlsToCache.push(item.logo);
     }
@@ -46,15 +54,25 @@ const prewarmCache = async (items: any[]) => {
   });
 
   const uniqueUrls = [...new Set(urlsToCache)];
-  console.log('uniqueUrls: ', uniqueUrls);
 
   // Using Promise.all is cleaner for concurrent background tasks
   await Promise.all(
     uniqueUrls.map(async (url) => {
-      console.log(url);
       const exists = await cache.match(url);
-      if (!exists) await cache.add(url);
-    })
+      if (!exists) {
+        try {
+          const response = await fetch(url, {
+            mode: "cors",
+            credentials: "omit",
+          });
+          if (response.ok) {
+            await cache.put(url, response);
+          }
+        } catch (error) {
+          console.error(`K-Os Cache Error`);
+        }
+      }
+    }),
   );
 };
 
@@ -69,15 +87,18 @@ export function useSystemData() {
 
       const processDisk = async (payload: string) => {
         const decryptedRaw = await decryptData(payload);
-        const decryptedJson = typeof decryptedRaw === 'string' ? JSON.parse(decryptedRaw) : decryptedRaw;
-        
+        const decryptedJson =
+          typeof decryptedRaw === "string"
+            ? JSON.parse(decryptedRaw)
+            : decryptedRaw;
+
         // HYDRATION: Replace relative proxy links with Absolute Gateway URLs
         const hydratedData = mapAssetUrls(decryptedJson, VITE_API_URL);
-        
+
         setMemory(hydratedData);
         prewarmCache(hydratedData);
       };
-      
+
       if (encryptedPayload) {
         await processDisk(encryptedPayload);
         setIsBooting(false);
@@ -85,16 +106,20 @@ export function useSystemData() {
       }
 
       try {
-        const response = await fetch(`${VITE_API_URL}?action=${import.meta.env.VITE_INITIALIZATION_ACTION}`);
+        const response = await fetch(
+          `${VITE_API_URL}?action=${import.meta.env.VITE_INITIALIZATION_ACTION}`,
+        );
         const rawEncoded = await response.text();
-        
+
         // 2. Store the ENCODED version to disk
         sessionStorage.setItem("K_OS_ENCRYPTED_DISK", rawEncoded);
-        
+
         // 3. Decrypt for immediate UI use
         await processDisk(rawEncoded);
       } catch (err) {
-        console.error("Critical System Failure: Unable to read encrypted disk.");
+        console.error(
+          "Critical System Failure: Unable to read encrypted disk.",
+        );
       } finally {
         setIsBooting(false);
       }

@@ -26,7 +26,6 @@ export default function ContactContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      console.log('response: ', response);
 
       if (response.ok) {
         setStatus("SUCCESS");
@@ -35,7 +34,6 @@ export default function ContactContent() {
         throw new Error();
       }
     } catch (err) {
-      console.log('err: ', err);
       setStatus("ERROR");
     }
   };
